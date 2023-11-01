@@ -1,10 +1,11 @@
 console.log("app started");
 
 import { Octokit } from "octokit";
+
+import buildTree from "./helper/buildTree";
 import fetchNewestCommit from "./helper/fetchNewestCommit";
 import RepoStructNode from "./type/RepoStructNode";
 import TreeNode from "./type/TreeNode";
-import buildTree from "./helper/buildTree";
 
 const octokit = new Octokit({});
 

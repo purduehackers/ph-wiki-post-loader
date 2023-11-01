@@ -1,6 +1,7 @@
 import { Octokit } from "octokit";
-import RepoStructNode from "../type/RepoStructNode";
+
 import FileMetaData from "../type/FileMetaData";
+import RepoStructNode from "../type/RepoStructNode";
 import TreeNode from "../type/TreeNode";
 import fetchTree from "./fetchTree";
 
