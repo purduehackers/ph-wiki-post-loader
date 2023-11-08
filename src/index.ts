@@ -2,8 +2,10 @@ console.log("app started");
 
 import "dotenv/config";
 
-import { Octokit } from "octokit";
+import { createAppAuth } from "@octokit/auth-app";
 import { OctokitOptions } from "@octokit/core/dist-types/types.d";
+import { Octokit } from "octokit";
+
 import { connectDB, disconnectDB } from "./db/db";
 import { Path } from "./db/model/Path";
 import { Post } from "./db/model/Post";
@@ -14,7 +16,12 @@ import RepoStructNode from "./type/RepoStructNode";
 import TreeNode from "./type/TreeNode";
 
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
+  authStrategy: createAppAuth,
+  auth: {
+    appId: process.env.GITHUB_APP_ID,
+    privateKey: process.env.PH_WIKI_LOADER_PRIVATE_KEY.replace(/\\n/g, "\n"),
+    installationId: process.env.GITHUB_APP_INSTALLATION_ID,
+  },
   throttle: {
     onRateLimit: (retryAfter, options: OctokitOptions, octokit, retryCount) => {
       octokit.log.warn(
@@ -32,6 +39,11 @@ const octokit = new Octokit({
     },
   },
 });
+
+// const app = new App({
+//   appId: process.env.GITHUB_APP_ID,
+//   privateKey: process.env.PH_WIKI_LOADER_PRIVATE_KEY.replace(/\\n/g, '\n'),
+// });
 
 const load = async () => {
   const newestCommit = await fetchNewestCommit(octokit);
