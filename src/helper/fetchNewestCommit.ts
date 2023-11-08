@@ -1,18 +1,18 @@
-import { Octokit } from "octokit";
+import { Octokit } from 'octokit'
 
 const fetchNewestCommit = async (octokit: Octokit) => {
   const newestCommit = await octokit.request(
-    "GET /repos/{owner}/{repo}/commits/{sha}",
+    'GET /repos/{owner}/{repo}/commits/{sha}',
     {
-      owner: "purduehackers",
-      repo: "ph-wiki-posts",
-      sha: "main",
+      owner: 'purduehackers',
+      repo: 'ph-wiki-posts',
+      sha: 'main',
       headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
+        'X-GitHub-Api-Version': '2022-11-28',
       },
-    },
-  );
-  return newestCommit;
-};
+    }
+  )
+  return newestCommit
+}
 
-export default fetchNewestCommit;
+export default fetchNewestCommit

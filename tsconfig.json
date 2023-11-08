@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "NodeNext",
     "esModuleInterop": true,
     "target": "es6",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "sourceMap": true,
-    "outDir": "build"
+    "outDir": "build",
+    "strict": true,
   },
   "lib": ["es2015"]
 }

@@ -1,7 +1,8 @@
-import FileMetaData from "./FileMetaData";
+import FileMetaData from './FileMetaData.js'
 
 interface RepoStructNode extends FileMetaData {
-  children: RepoStructNode[];
+  slug: string
+  children: RepoStructNode[]
 }
 
-export default RepoStructNode;
+export default RepoStructNode
