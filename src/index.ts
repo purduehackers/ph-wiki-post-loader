@@ -18,9 +18,9 @@ import TreeNode from "./type/TreeNode";
 const octokit = new Octokit({
   authStrategy: createAppAuth,
   auth: {
-    appId: process.env.GITHUB_APP_ID,
+    appId: process.env.APP_ID,
     privateKey: process.env.PH_WIKI_LOADER_PRIVATE_KEY.replace(/\\n/g, "\n"),
-    installationId: process.env.GITHUB_APP_INSTALLATION_ID,
+    installationId: process.env.INSTALLATION_ID,
   },
   throttle: {
     onRateLimit: (retryAfter, options: OctokitOptions, octokit, retryCount) => {
