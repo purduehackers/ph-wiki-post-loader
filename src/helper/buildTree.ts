@@ -5,6 +5,8 @@ import RepoStructNode from "../type/RepoStructNode";
 import TreeNode from "../type/TreeNode";
 import fetchTree from "./fetchTree";
 
+const mdString = ".md";
+
 const buildTree = async (
   root: TreeNode,
   repoStruct: RepoStructNode,
@@ -19,7 +21,7 @@ const buildTree = async (
     const subtree = subtrees[i];
     if (subtree.path.charAt(0) == ".") continue;
     const repoStructChildren: RepoStructNode = {
-      path: subtree.path,
+      path: subtree.path.slice(0, -mdString.length),
       mode: subtree.mode,
       type: subtree.type,
       size: subtree.size,
