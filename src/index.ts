@@ -40,11 +40,6 @@ const octokit = new Octokit({
   },
 });
 
-// const app = new App({
-//   appId: process.env.GITHUB_APP_ID,
-//   privateKey: process.env.PH_WIKI_LOADER_PRIVATE_KEY.replace(/\\n/g, '\n'),
-// });
-
 const load = async () => {
   const newestCommit = await fetchNewestCommit(octokit);
   const root: TreeNode = {

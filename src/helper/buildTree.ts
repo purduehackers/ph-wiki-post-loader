@@ -17,6 +17,7 @@ const buildTree = async (
   const subtrees: FileMetaData[] = tree.data.tree;
   for (let i = 0; i < subtrees.length; i += 1) {
     const subtree = subtrees[i];
+    if (subtree.path.charAt(0) == ".") continue;
     const repoStructChildren: RepoStructNode = {
       path: subtree.path,
       mode: subtree.mode,
