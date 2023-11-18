@@ -1,12 +1,13 @@
 import GithubSlugger from 'github-slugger'
 import { Octokit } from 'octokit'
 
+import filesToAvoid from '../filesToAvoid.js'
 import FileMetaData from '../type/FileMetaData.js'
 import RepoStructNode from '../type/RepoStructNode.js'
 import TreeNode from '../type/TreeNode.js'
 import fetchTree from './fetchTree.js'
 
-const mdString = '.md'
+const mdStr = '.md'
 
 const buildTree = async (
   root: TreeNode,
@@ -21,8 +22,13 @@ const buildTree = async (
   const subtrees: FileMetaData[] = tree.data.tree
   for (let i = 0; i < subtrees.length; i += 1) {
     const subtree = subtrees[i]
-    if (subtree.path.charAt(0) == '.') continue
-    const fileName = subtree.path.slice(0, -mdString.length)
+    const path = subtree.path
+    if (path.charAt(0) == '.' || filesToAvoid.has(path)) continue
+    // check last three characters are ".md"
+    const isMd = path.substring(path.length - mdStr.length) === mdStr
+    // if not a markdown file, it is a folder, thus, filename is path
+    const fileName = isMd ? path.substring(0, path.length - mdStr.length) : path
+
     const repoStructChildren: RepoStructNode = {
       slug: slugger.slug(fileName),
       path: fileName,
