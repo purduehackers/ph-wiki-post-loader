@@ -69,16 +69,19 @@ const main = async () => {
     slug: slugger.slug('root'),
     sha: newestCommit.data.commit.tree.sha,
     url: newestCommit.data.commit.tree.url,
-    path: 'root',
+    authors: [],
+    path: '',
+    name: 'root',
     mode: '',
     type: 'tree',
     size: undefined,
+    lastUpdated: new Date(),
     children: [],
   }
   process.stdout.write('Done\n')
 
   process.stdout.write('Building tree: ')
-  await buildTree(rootRawData, rootRepoStruct, octokit, slugger)
+  await buildTree(rootRawData, rootRepoStruct, '', octokit, slugger)
   process.stdout.write('Done\n')
 
   await connectDB()

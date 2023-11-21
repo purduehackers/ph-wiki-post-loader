@@ -2,10 +2,14 @@ import GithubSlugger from 'github-slugger'
 import { Octokit } from 'octokit'
 
 import filesToAvoid from '../filesToAvoid.js'
+import FileCommit from '../type/FileCommit.js'
 import FileMetaData from '../type/FileMetaData.js'
 import RawDataNode from '../type/RawDataNode.js'
 import RepoStructNode from '../type/RepoStructNode.js'
+import fetchCommits from './fetchCommit.js'
+import fetchFileContributors from './fetchFileContributors.js'
 import fetchTree from './fetchTree.js'
+import getLastUpdated from './getLastUpdated.js'
 
 const mdStr = '.md'
 
@@ -15,6 +19,7 @@ This function builds the nested stucture of the repository.
 const buildTree = async (
   currentRawData: RawDataNode,
   parentRepoStruct: RepoStructNode,
+  parentPath: string,
   octokit: Octokit,
   slugger: GithubSlugger
 ) => {
@@ -25,18 +30,26 @@ const buildTree = async (
   const subtrees: FileMetaData[] = tree.data.tree
   for (let i = 0; i < subtrees.length; i += 1) {
     const subtree = subtrees[i]
-    const path = subtree.path
+    const name = subtree.path
+    const path = `${parentPath}/${name}`
 
     // hidden files and files in filesToAvoid are ignored
-    if (path.charAt(0) == '.' || filesToAvoid.has(path)) continue
+    if (name.charAt(0) == '.' || filesToAvoid.has(name)) continue
     // check last three characters are ".md"
-    const isMd = path.substring(path.length - mdStr.length) === mdStr
+    const isMd = name.substring(name.length - mdStr.length) === mdStr
     // if not a markdown file, it is a folder, thus, filename is path
-    const fileName = isMd ? path.substring(0, path.length - mdStr.length) : path
+    const fileName = isMd ? name.substring(0, name.length - mdStr.length) : name
+
+    const commits = (await fetchCommits(path, octokit)).data as FileCommit[]
+    const authors = fetchFileContributors(commits)
+    const lastUpdated = getLastUpdated(commits)
 
     const repoStructChildren: RepoStructNode = {
       slug: slugger.slug(fileName),
-      path: fileName,
+      path: path,
+      lastUpdated: lastUpdated,
+      name: fileName,
+      authors: authors,
       mode: subtree.mode,
       type: subtree.type,
       size: subtree.size,
@@ -44,7 +57,7 @@ const buildTree = async (
       url: subtree.url,
       children: [],
     }
-    await buildTree(subtrees[i], repoStructChildren, octokit, slugger)
+    await buildTree(subtrees[i], repoStructChildren, path, octokit, slugger)
     parentRepoStruct.children.push(repoStructChildren)
   }
 }
