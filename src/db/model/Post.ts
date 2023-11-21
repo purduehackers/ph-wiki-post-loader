@@ -1,16 +1,8 @@
-import mongoose, { Document, Model } from 'mongoose'
+import mongoose from 'mongoose'
 
-export interface Post {
-  name: string
-  slug: string
-  url: string
-  content: string
-}
-export interface PostDocument extends Post, Document {}
+import { IPostModel, PostDocument } from '../../type/Post.js'
 
-export interface IPostModel extends Model<PostDocument> {}
-
-const PostSchema = new mongoose.Schema<PostDocument, IPostModel>(
+export const PostSchema = new mongoose.Schema<PostDocument, IPostModel>(
   {
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
@@ -23,7 +15,6 @@ const PostSchema = new mongoose.Schema<PostDocument, IPostModel>(
   }
 )
 
-export { PostSchema }
 export const PostModel = mongoose.model<PostDocument, IPostModel>(
   'Post',
   PostSchema

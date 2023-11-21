@@ -1,5 +1,6 @@
 import { Octokit } from 'octokit'
 
+/* A tree is like a folder in Github API */
 const fetchTree = async (sha: string, octokit: Octokit) => {
   const tree = await octokit.request(
     'GET /repos/{owner}/{repo}/git/trees/{sha}',

@@ -3,26 +3,31 @@ import { Octokit } from 'octokit'
 
 import filesToAvoid from '../filesToAvoid.js'
 import FileMetaData from '../type/FileMetaData.js'
+import RawDataNode from '../type/RawDataNode.js'
 import RepoStructNode from '../type/RepoStructNode.js'
-import TreeNode from '../type/TreeNode.js'
 import fetchTree from './fetchTree.js'
 
 const mdStr = '.md'
 
+/*
+This function builds the nested stucture of the repository. 
+*/
 const buildTree = async (
-  root: TreeNode,
-  repoStruct: RepoStructNode,
+  currentRawData: RawDataNode,
+  parentRepoStruct: RepoStructNode,
   octokit: Octokit,
   slugger: GithubSlugger
 ) => {
-  if (root.type != 'tree') {
+  if (currentRawData.type != 'tree') {
     return
   }
-  const tree = await fetchTree(root.sha, octokit)
+  const tree = await fetchTree(currentRawData.sha, octokit)
   const subtrees: FileMetaData[] = tree.data.tree
   for (let i = 0; i < subtrees.length; i += 1) {
     const subtree = subtrees[i]
     const path = subtree.path
+
+    // hidden files and files in filesToAvoid are ignored
     if (path.charAt(0) == '.' || filesToAvoid.has(path)) continue
     // check last three characters are ".md"
     const isMd = path.substring(path.length - mdStr.length) === mdStr
@@ -40,7 +45,7 @@ const buildTree = async (
       children: [],
     }
     await buildTree(subtrees[i], repoStructChildren, octokit, slugger)
-    repoStruct.children.push(repoStructChildren)
+    parentRepoStruct.children.push(repoStructChildren)
   }
 }
 

@@ -1,21 +1,8 @@
-import { Document, Model } from 'mongoose'
 import mongoose from 'mongoose'
 
-import { PostDocument } from './Post.js'
+import { PathDocument } from '../../type/Path.js'
+import { IPathModel } from '../../type/Path.js'
 import { PostSchema } from './Post.js'
-
-export interface Path {
-  name: string
-  slug: string
-  posts: PostDocument[]
-  // children: Path[]
-}
-export interface SinglePathDocument extends Path, Document {}
-
-export interface PathDocument extends SinglePathDocument {
-  children: PathDocument[]
-}
-export interface IPathModel extends Model<PathDocument> {}
 
 const PathSchema = new mongoose.Schema<PathDocument, IPathModel>(
   {
@@ -29,6 +16,7 @@ const PathSchema = new mongoose.Schema<PathDocument, IPathModel>(
   }
 )
 
+/* Creating nested schema */
 PathSchema.add({
   children: { type: [PathSchema], required: true },
 })
