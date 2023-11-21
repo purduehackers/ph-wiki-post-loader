@@ -1,12 +1,14 @@
 import GithubSlugger from 'github-slugger'
 import { Octokit } from 'octokit'
 
-import { PathDocument, PathModel } from '../db/model/Path.js'
-import { PostDocument, PostModel } from '../db/model/Post.js'
+import { PathModel } from '../db/model/Path.js'
+import { PostModel } from '../db/model/Post.js'
+import { PathDocument } from '../type/Path.js'
+import { PostDocument } from '../type/Post.js'
 import RepoStructNode from '../type/RepoStructNode.js'
 import fetchBlob from './fetchBlob.js'
 
-const saveToPath = async (
+const saveToDB = async (
   repoStructRoot: RepoStructNode,
   octokit: Octokit,
   slugger: GithubSlugger
@@ -21,7 +23,7 @@ const saveToPath = async (
     })
     const children = repoStructRoot.children
     for (let i = 0; i < children.length; i += 1) {
-      const [childrenPath, childPost] = await saveToPath(
+      const [childrenPath, childPost] = await saveToDB(
         children[i],
         octokit,
         slugger
@@ -46,4 +48,4 @@ const saveToPath = async (
   return [path, post]
 }
 
-export default saveToPath
+export default saveToDB

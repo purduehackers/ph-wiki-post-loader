@@ -1,4 +1,4 @@
-console.log('app started')
+console.log('App started')
 
 import 'dotenv/config'
 
@@ -12,10 +12,11 @@ import { PathModel } from './db/model/Path.js'
 import { PostModel } from './db/model/Post.js'
 import buildTree from './helper/buildTree.js'
 import fetchNewestCommit from './helper/fetchNewestCommit.js'
-import saveToPath from './helper/saveToPath.js'
+import saveToDB from './helper/saveToDB.js'
+import RawDataNode from './type/RawDataNode.js'
 import RepoStructNode from './type/RepoStructNode.js'
-import TreeNode from './type/TreeNode.js'
 
+/* using octokit to handle Github API */
 const octokit = new Octokit({
   authStrategy: createAppAuth,
   auth: {
@@ -26,6 +27,7 @@ const octokit = new Octokit({
     ),
     installationId: process.env.INSTALLATION_ID,
   },
+  /* this prevents from going over rate limit */
   throttle: {
     onRateLimit: (
       retryAfter: number,
@@ -53,15 +55,17 @@ const octokit = new Octokit({
   },
 })
 
-const load = async () => {
+const main = async () => {
   const slugger = new GithubSlugger()
+
+  process.stdout.write('Fetching newest commit: ')
   const newestCommit = await fetchNewestCommit(octokit)
-  const root: TreeNode = {
+  const rootRawData: RawDataNode = {
     sha: newestCommit.data.commit.tree.sha,
     url: newestCommit.data.commit.tree.url,
     type: 'tree',
   }
-  const repoStructRoot: RepoStructNode = {
+  const rootRepoStruct: RepoStructNode = {
     slug: slugger.slug('root'),
     sha: newestCommit.data.commit.tree.sha,
     url: newestCommit.data.commit.tree.url,
@@ -71,12 +75,28 @@ const load = async () => {
     size: undefined,
     children: [],
   }
-  await buildTree(root, repoStructRoot, octokit, slugger)
+  process.stdout.write('Done\n')
+
+  process.stdout.write('Building tree: ')
+  await buildTree(rootRawData, rootRepoStruct, octokit, slugger)
+  process.stdout.write('Done\n')
+
   await connectDB()
+
+  process.stdout.write('Dropping previous version: ')
+  /* Overwrite previous data by first dropping them.
+     TODO: add snapshot of the previous version of the database */
   await PathModel.collection.drop()
   await PostModel.collection.drop()
-  await saveToPath(repoStructRoot, octokit, slugger)
+  process.stdout.write('Done\n')
+
+  process.stdout.write('Saving to DB: ')
+  await saveToDB(rootRepoStruct, octokit, slugger)
+  process.stdout.write('Done\n')
+
+  process.stdout.write('Wrapping up: ')
   await disconnectDB()
+  process.stdout.write('Done\n')
 }
 
-load()
+main()
