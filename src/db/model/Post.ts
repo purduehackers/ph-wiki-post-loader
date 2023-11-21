@@ -8,6 +8,13 @@ export const PostSchema = new mongoose.Schema<PostDocument, IPostModel>(
     slug: { type: String, required: true, unique: true },
     url: { type: String, required: true },
     content: { type: String, required: true },
+    authors: [
+      {
+        login: { type: String, required: true },
+        avatar_url: { type: String, required: true },
+        html_url: { type: String, required: true },
+      },
+    ],
   },
   {
     timestamps: true,

@@ -9,19 +9,19 @@ import RepoStructNode from '../type/RepoStructNode.js'
 import fetchBlob from './fetchBlob.js'
 
 const saveToDB = async (
-  repoStructRoot: RepoStructNode,
+  currentRepoStruct: RepoStructNode,
   octokit: Octokit,
   slugger: GithubSlugger
 ) => {
   let path = null
   let post = null
-  if (repoStructRoot.type == 'tree') {
+  if (currentRepoStruct.type == 'tree') {
     path = new PathModel({
-      name: repoStructRoot.path,
-      slug: repoStructRoot.slug,
+      name: currentRepoStruct.name,
+      slug: currentRepoStruct.slug,
       children: [],
     })
-    const children = repoStructRoot.children
+    const children = currentRepoStruct.children
     for (let i = 0; i < children.length; i += 1) {
       const [childrenPath, childPost] = await saveToDB(
         children[i],
@@ -36,12 +36,13 @@ const saveToDB = async (
       }
     }
     await path.save()
-  } else if (repoStructRoot.type == 'blob') {
+  } else if (currentRepoStruct.type == 'blob') {
     post = new PostModel({
-      name: repoStructRoot.path,
-      slug: slugger.slug(repoStructRoot.path),
-      url: repoStructRoot.url,
-      content: await fetchBlob(repoStructRoot.sha, octokit),
+      name: currentRepoStruct.name,
+      slug: slugger.slug(currentRepoStruct.name),
+      url: currentRepoStruct.url,
+      content: await fetchBlob(currentRepoStruct.sha, octokit),
+      authors: currentRepoStruct.authors,
     })
     await post.save()
   }
