@@ -8,6 +8,7 @@ export interface Post {
   url: string
   authors: GithubUser
   content: string
+  lastUpdated: Date
 }
 
 export interface PostDocument extends Post, Document {}

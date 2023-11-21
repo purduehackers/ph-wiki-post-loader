@@ -9,6 +9,7 @@ import RepoStructNode from '../type/RepoStructNode.js'
 import fetchCommits from './fetchCommit.js'
 import fetchFileContributors from './fetchFileContributors.js'
 import fetchTree from './fetchTree.js'
+import getLastUpdated from './getLastUpdated.js'
 
 const mdStr = '.md'
 
@@ -41,10 +42,12 @@ const buildTree = async (
 
     const commits = (await fetchCommits(path, octokit)).data as FileCommit[]
     const authors = fetchFileContributors(commits)
+    const lastUpdated = getLastUpdated(commits)
 
     const repoStructChildren: RepoStructNode = {
       slug: slugger.slug(fileName),
       path: path,
+      lastUpdated: lastUpdated,
       name: fileName,
       authors: authors,
       mode: subtree.mode,

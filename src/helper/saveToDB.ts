@@ -43,6 +43,7 @@ const saveToDB = async (
       url: currentRepoStruct.url,
       content: await fetchBlob(currentRepoStruct.sha, octokit),
       authors: currentRepoStruct.authors,
+      lastUpdated: currentRepoStruct.lastUpdated,
     })
     await post.save()
   }

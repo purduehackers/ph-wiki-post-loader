@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
-export const connectDB = () => {
-  mongoose
+export const connectDB = async () => {
+  await mongoose
     .connect(process.env.MONGODB_URI || '')
     .then(() => {
       console.log('Connected to MongoDB')
@@ -11,6 +11,6 @@ export const connectDB = () => {
     })
 }
 
-export const disconnectDB = () => {
-  mongoose.connection.close()
+export const disconnectDB = async () => {
+  await mongoose.connection.close()
 }

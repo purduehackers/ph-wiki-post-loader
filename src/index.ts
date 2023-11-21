@@ -75,6 +75,7 @@ const main = async () => {
     mode: '',
     type: 'tree',
     size: undefined,
+    lastUpdated: new Date(),
     children: [],
   }
   process.stdout.write('Done\n')

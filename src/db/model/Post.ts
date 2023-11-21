@@ -15,6 +15,7 @@ export const PostSchema = new mongoose.Schema<PostDocument, IPostModel>(
         html_url: { type: String, required: true },
       },
     ],
+    lastUpdated: { type: Date, required: true },
   },
   {
     timestamps: true,

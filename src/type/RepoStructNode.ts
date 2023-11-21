@@ -8,6 +8,7 @@ structure.
 interface RepoStructNode extends FileMetaData {
   slug: string
   name: string
+  lastUpdated: Date
   authors: GithubUser[]
   children: RepoStructNode[]
 }
