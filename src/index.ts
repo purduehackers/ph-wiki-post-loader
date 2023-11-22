@@ -59,6 +59,7 @@ const main = async () => {
   const slugger = new GithubSlugger()
 
   process.stdout.write('Fetching newest commit: ')
+  const fetchStartTime = Date.now()
   const newestCommit = await fetchNewestCommit(octokit)
   const rootRawData: RawDataNode = {
     sha: newestCommit.data.commit.tree.sha,
@@ -69,7 +70,7 @@ const main = async () => {
     slug: slugger.slug('root'),
     sha: newestCommit.data.commit.tree.sha,
     url: newestCommit.data.commit.tree.url,
-    authors: [],
+    contributors: [],
     path: '',
     name: 'root',
     mode: '',
@@ -78,28 +79,37 @@ const main = async () => {
     lastUpdated: new Date(),
     children: [],
   }
-  process.stdout.write('Done\n')
+  const fetchEndTime = Date.now()
+  process.stdout.write(`Done (${fetchEndTime - fetchStartTime}ms)\n`)
 
   process.stdout.write('Building tree: ')
+  const buildTreeStartTime = Date.now()
   await buildTree(rootRawData, rootRepoStruct, '', octokit, slugger)
-  process.stdout.write('Done\n')
+  const buildTreeEndTime = Date.now()
+  process.stdout.write(`Done (${buildTreeEndTime - buildTreeStartTime}ms)\n`)
 
   await connectDB()
 
   process.stdout.write('Dropping previous version: ')
+  const dropStartTime = Date.now()
   /* Overwrite previous data by first dropping them.
      TODO: add snapshot of the previous version of the database */
   await PathModel.collection.drop()
   await PostModel.collection.drop()
-  process.stdout.write('Done\n')
+  const dropEndTime = Date.now()
+  process.stdout.write(`Done (${dropEndTime - dropStartTime}ms)\n`)
 
   process.stdout.write('Saving to DB: ')
+  const saveStartTime = Date.now()
   await saveToDB(rootRepoStruct, octokit, slugger)
-  process.stdout.write('Done\n')
+  const saveEndTime = Date.now()
+  process.stdout.write(`Done (${saveEndTime - saveStartTime}ms)\n`)
 
   process.stdout.write('Wrapping up: ')
+  const wrapUpStartTime = Date.now()
   await disconnectDB()
-  process.stdout.write('Done\n')
+  const wrapUpEndTime = Date.now()
+  process.stdout.write(`Done (${wrapUpEndTime - wrapUpStartTime}ms)\n`)
 }
 
 main()

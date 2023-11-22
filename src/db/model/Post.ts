@@ -15,6 +15,15 @@ export const PostSchema = new mongoose.Schema<PostDocument, IPostModel>(
         html_url: { type: String, required: true },
       },
     ],
+    contributors: [
+      {
+        login: { type: String, required: true },
+        avatar_url: { type: String, required: true },
+        html_url: { type: String, required: true },
+      },
+    ],
+    tags: { type: [String], required: true },
+    archived: { type: Boolean, required: true },
     lastUpdated: { type: Date, required: true },
   },
   {

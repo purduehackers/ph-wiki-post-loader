@@ -7,7 +7,7 @@ import FileMetaData from '../type/FileMetaData.js'
 import RawDataNode from '../type/RawDataNode.js'
 import RepoStructNode from '../type/RepoStructNode.js'
 import fetchCommits from './fetchCommit.js'
-import fetchFileContributors from './fetchFileContributors.js'
+import fetchContributors from './fetchContributors.js'
 import fetchTree from './fetchTree.js'
 import getLastUpdated from './getLastUpdated.js'
 
@@ -33,15 +33,15 @@ const buildTree = async (
     const name = subtree.path
     const path = `${parentPath}/${name}`
 
-    // hidden files and files in filesToAvoid are ignored
+    /* hidden files and files in filesToAvoid are ignored */
     if (name.charAt(0) == '.' || filesToAvoid.has(name)) continue
-    // check last three characters are ".md"
+    /* check last three characters are ".md" */
     const isMd = name.substring(name.length - mdStr.length) === mdStr
-    // if not a markdown file, it is a folder, thus, filename is path
+    /* if not a markdown file, it is a folder, thus, filename is path */
     const fileName = isMd ? name.substring(0, name.length - mdStr.length) : name
 
     const commits = (await fetchCommits(path, octokit)).data as FileCommit[]
-    const authors = fetchFileContributors(commits)
+    const contributors = fetchContributors(commits)
     const lastUpdated = getLastUpdated(commits)
 
     const repoStructChildren: RepoStructNode = {
@@ -49,7 +49,7 @@ const buildTree = async (
       path: path,
       lastUpdated: lastUpdated,
       name: fileName,
-      authors: authors,
+      contributors: contributors,
       mode: subtree.mode,
       type: subtree.type,
       size: subtree.size,

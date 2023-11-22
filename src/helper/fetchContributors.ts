@@ -1,7 +1,7 @@
 import FileCommit from '../type/FileCommit.js'
 import GithubUser from '../type/GithubUser.js'
 
-const fetchFileContributors = (commits: FileCommit[]) => {
+const fetchContributors = (commits: FileCommit[]) => {
   const authorNames = new Set<string>()
   const authors: GithubUser[] = []
 
@@ -15,4 +15,4 @@ const fetchFileContributors = (commits: FileCommit[]) => {
   return authors
 }
 
-export default fetchFileContributors
+export default fetchContributors

@@ -7,6 +7,9 @@ export interface Post {
   slug: string
   url: string
   authors: GithubUser
+  contributors: GithubUser
+  tags: string[]
+  archived: boolean
   content: string
   lastUpdated: Date
 }
