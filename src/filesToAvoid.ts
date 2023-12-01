@@ -1,3 +1,3 @@
-const filesToAvoid = new Set(['README.md'])
+const filesToAvoid = new Set<string>([])
 
 export default filesToAvoid

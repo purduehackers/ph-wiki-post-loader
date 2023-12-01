@@ -42,7 +42,7 @@ const saveToDB = async (
     const blob = await fetchBlob(currentRepoStruct.sha, octokit)
     const markdown = parseMarkDown(blob)
 
-    const usernames = markdown.metadata.authors
+    const usernames = markdown.metadata.authors ?? []
     let authors = await fetchAuthors(usernames, octokit)
     /* if no authors were declared, authors will be the contributors */
     if (authors.length == 0) {
