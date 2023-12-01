@@ -6,8 +6,8 @@ export interface Post {
   name: string
   slug: string
   url: string
-  authors: GithubUser
-  contributors: GithubUser
+  authors: GithubUser[]
+  contributors: GithubUser[]
   tags: string[]
   archived: boolean
   content: string
