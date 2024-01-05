@@ -32,6 +32,7 @@ const buildTree = async (
     const subtree = subtrees[i]
     const name = subtree.path
     const path = `${parentPath}/${name}`
+    const url = `https://github.com/purduehackers/ph-wiki-posts/blob/main/${name}`
 
     /* hidden files and files in filesToAvoid are ignored */
     if (name.charAt(0) == '.' || filesToAvoid.has(name)) continue
@@ -54,7 +55,7 @@ const buildTree = async (
       type: subtree.type,
       size: subtree.size,
       sha: subtree.sha,
-      url: subtree.url,
+      url: url,
       children: [],
     }
     await buildTree(subtrees[i], repoStructChildren, path, octokit, slugger)
