@@ -32,7 +32,7 @@ const buildTree = async (
     const subtree = subtrees[i]
     const name = subtree.path
     const path = `${parentPath}/${name}`
-    const url = `https://github.com/purduehackers/ph-wiki-posts/blob/main/${name}`
+    const url = `https://github.com/purduehackers/ph-wiki-posts/blob/main${path}`
 
     /* hidden files and files in filesToAvoid are ignored */
     if (name.charAt(0) == '.' || filesToAvoid.has(name)) continue
