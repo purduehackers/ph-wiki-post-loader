@@ -53,7 +53,7 @@ const saveToDB = async (
 
     post = new PostModel({
       name: currentRepoStruct.name,
-      slug: slugger.slug(currentRepoStruct.name),
+      slug: currentRepoStruct.slug,
       url: currentRepoStruct.url,
       content: markdown.content,
       authors: authors,

@@ -44,9 +44,10 @@ const buildTree = async (
     const commits = (await fetchCommits(path, octokit)).data as FileCommit[]
     const contributors = fetchContributors(commits)
     const lastUpdated = getLastUpdated(commits)
+    const slug = slugger.slug(fileName)
 
     const repoStructChildren: RepoStructNode = {
-      slug: slugger.slug(fileName),
+      slug: slug,
       path: path,
       lastUpdated: lastUpdated,
       name: fileName,
